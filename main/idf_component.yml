@@ -1,0 +1,9 @@
+## IDF Component Manager Manifest File
+dependencies:
+  beo_tinyusb:
+    git: git@github.com:kaspernyhus/beo_esp_tinyusb.git
+    version: master
+
+  signal_generator:
+    git: git@github.com:kaspernyhus/esp_signal_generator.git
+    version: master

@@ -1,0 +1,7 @@
+menu "Audio configuration"
+        config SIG_GEN_AUDIO_SOURCE
+            bool "Enable Signal Generator"
+            default n
+            help
+                Use signal generator as audio source
+endmenu # Audio configuration
