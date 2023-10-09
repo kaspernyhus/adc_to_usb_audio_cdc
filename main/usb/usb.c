@@ -12,10 +12,11 @@
 #include "tinyusb.h"
 #include "tusb_tasks.h"
 #include "usb_audio.h"
+#include "usb_cdc.h"
 
 #include "esp_log.h"
 
-static const char* TAG = "USB TASK";
+static const char* TAG = "USB-TASK";
 
 // Invoked when device is mounted
 void tud_mount_cb(void)
@@ -39,6 +40,7 @@ void usb_init(void)
     };
     tinyusb_driver_install(&tusb_cfg);
 
+    usb_cdc_init();
     usb_audio_init();
 }
 

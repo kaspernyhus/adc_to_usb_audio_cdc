@@ -18,7 +18,7 @@
 
 #include "esp_log.h"
 
-static const char* TAG = "USB AUDIO";
+static const char* TAG = "USB-AUDIO";
 
 static audio_config_t audio_config;
 static uint8_t* audio_data = NULL;
