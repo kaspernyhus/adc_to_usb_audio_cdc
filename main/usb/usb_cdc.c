@@ -33,7 +33,7 @@ static size_t msg_idx = 0;
 
 esp_err_t tusb_serial_write(const char* buffer, size_t length)
 {
-    ESP_LOGI(TAG, "Send:    %s", buffer);
+    ESP_LOGD(TAG, "Send:    %s", buffer);
     tinyusb_cdcacm_write_queue(TINYUSB_CDC_ACM_0, (uint8_t*)buffer, length);
     tinyusb_cdcacm_write_flush(TINYUSB_CDC_ACM_0, 0);
     return ESP_OK;
@@ -49,7 +49,7 @@ void tinyusb_cdc_rx_callback(int itf, cdcacm_event_t* event)
     if (ret == ESP_OK) {
         if (wanted_char_flag) {
             wanted_char_flag = false;
-            ESP_LOGI(TAG, "Message: %s", message);
+            ESP_LOGD(TAG, "Message: %s", message);
             tusb_serial_write((char*)message, msg_idx);
             msg_idx = 0;
             memset(message, 0, sizeof(message));

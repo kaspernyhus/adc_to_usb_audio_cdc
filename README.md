@@ -1,1 +1,1 @@
-# ADC to USB test application
+# ADC to USB test application + USB CDC
