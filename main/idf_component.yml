@@ -1,9 +1,10 @@
 ## IDF Component Manager Manifest File
 dependencies:
-  beo_tinyusb:
-    git: git@github.com:kaspernyhus/beo_esp_tinyusb.git
-    version: master
+  esp_tinyusb:
+    path: "./usb/esp_tinyusb"
+    version: "kank/usb-audio"
+    git: https://github.com/bang-olufsen/idf-extra-components.git
 
-  signal_generator:
-    git: git@github.com:kaspernyhus/esp_signal_generator.git
-    version: master
+  esp_signal_generator:
+    path: "./esp_signal_generator"
+    git: https://github.com/kaspernyhus/esp_components.git

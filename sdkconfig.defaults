@@ -52,3 +52,9 @@ CONFIG_ESP_SIG_GEN_PULL=y
 # CONFIG_ESP_SIG_GEN_PUSH is not set
 # end of ESP Signal Generator
 # end of Component config
+
+#
+# Audio configuration
+#
+CONFIG_SIG_GEN_AUDIO_SOURCE=y
+# end of Audio configuration

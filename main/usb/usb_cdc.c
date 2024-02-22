@@ -49,7 +49,7 @@ void tinyusb_cdc_rx_callback(int itf, cdcacm_event_t* event)
     if (ret == ESP_OK) {
         if (wanted_char_flag) {
             wanted_char_flag = false;
-            ESP_LOGD(TAG, "Message: %s", message);
+            ESP_LOGI(TAG, "Message: %s", message);
             tusb_serial_write((char*)message, msg_idx);
             msg_idx = 0;
             memset(message, 0, sizeof(message));

@@ -25,28 +25,17 @@ static uint8_t* audio_data = NULL;
 static size_t audio_bytes_read;
 static bool usb_audio_stream_running = false;
 
-bool tud_audio_tx_done_pre_load_cb(uint8_t rhport, uint8_t itf, uint8_t ep_in, uint8_t cur_alt_setting)
+esp_err_t usb_audio_transfer_data()
 {
-    (void)rhport;
-    (void)itf;
-    (void)ep_in;
-    (void)cur_alt_setting;
-
     if (usb_audio_stream_running) {
         tud_audio_write(audio_data, CFG_TUD_AUDIO_EP_SZ_IN);
     }
 
-    return true;
+    return ESP_OK;
 }
 
-bool tud_audio_tx_done_post_load_cb(uint8_t rhport, uint16_t n_bytes_copied, uint8_t itf, uint8_t ep_in, uint8_t cur_alt_setting)
+esp_err_t usb_audio_prepare_data()
 {
-    (void)rhport;
-    (void)n_bytes_copied;
-    (void)itf;
-    (void)ep_in;
-    (void)cur_alt_setting;
-
     if (usb_audio_stream_running) {
         audio_bytes_read = xStreamBufferReceive(audio_config.stream_buffer_handle, (void*)audio_data, audio_config.audio_data_pr_ms, 0);
         if (audio_bytes_read != audio_config.audio_data_pr_ms) {
@@ -68,12 +57,16 @@ bool tud_audio_tx_done_post_load_cb(uint8_t rhport, uint16_t n_bytes_copied, uin
         }
     }
 
-    return true;
+    return ESP_OK;
 }
 
 void usb_audio_init()
 {
-    tusb_audio_init();
+    tinyusb_audio_config_t cfg = {
+        .on_post_callback = usb_audio_prepare_data,
+        .on_pre_callback = usb_audio_transfer_data,
+    };
+    tusb_audio_init(&cfg);
 }
 
 esp_err_t usb_audio_start(audio_config_t* audio_cfg)
