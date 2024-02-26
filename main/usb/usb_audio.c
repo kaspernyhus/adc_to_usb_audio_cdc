@@ -10,6 +10,8 @@
  */
 #include <stdint.h>
 
+#include "freertos/portmacro.h"
+#include "projdefs.h"
 #include "tusb_audio.h"
 #include "usb_audio.h"
 
@@ -30,33 +32,24 @@ esp_err_t usb_audio_transfer_data()
     if (usb_audio_stream_running) {
         tud_audio_write(audio_data, CFG_TUD_AUDIO_EP_SZ_IN);
     }
-
     return ESP_OK;
 }
 
 esp_err_t usb_audio_prepare_data()
 {
     if (usb_audio_stream_running) {
-        audio_bytes_read = xStreamBufferReceive(audio_config.stream_buffer_handle, (void*)audio_data, audio_config.audio_data_pr_ms, 0);
-        if (audio_bytes_read != audio_config.audio_data_pr_ms) {
+        audio_bytes_read = xStreamBufferReceive(
+            audio_config.stream_buffer_handle, 
+            (void*)audio_data,
+            audio_config.audio_bytes_per_ms,
+            0);
+        
+        if (audio_bytes_read != audio_config.audio_bytes_per_ms) {
             ESP_LOGW(TAG, "Expected %lu bytes from StreamBuffer, Sending %zu bytes to USB",
-                audio_config.stream_buffer_trigger_size,
+                audio_config.audio_bytes_per_ms,
                 audio_bytes_read);
         }
     }
-
-    if (audio_config.audio_format == PCM_FORMAT_24BIT_32BIT) {
-        uint8_t* destination = audio_data;
-        uint32_t data_length = audio_config.audio_data_pr_ms;
-        for (int i = 0; i < (data_length / 4); i++) {
-            uint16_t src_offset = i * 4;
-            uint16_t dst_offset = i * 3;
-            destination[dst_offset] = audio_data[src_offset + 1];
-            destination[dst_offset + 1] = audio_data[src_offset + 2];
-            destination[dst_offset + 2] = audio_data[src_offset + 3];
-        }
-    }
-
     return ESP_OK;
 }
 
@@ -73,13 +66,13 @@ esp_err_t usb_audio_start(audio_config_t* audio_cfg)
 {
     esp_err_t ret = ESP_FAIL;
     audio_config = *audio_cfg;
-    audio_data = pvPortMalloc(audio_config.audio_data_pr_ms);
-    ESP_LOGI(TAG, "Created audio_data buffer of size: %lu", audio_config.audio_data_pr_ms);
+    audio_data = pvPortMalloc(audio_config.audio_bytes_per_ms);
+    ESP_LOGI(TAG, "Created audio_data buffer of size: %lu", audio_config.audio_bytes_per_ms);
     if (audio_data != NULL) {
         usb_audio_stream_running = true;
         ret = ESP_OK;
     }
-
+    memset(audio_data, 0, audio_config.audio_bytes_per_ms);
     return ret;
 }
 

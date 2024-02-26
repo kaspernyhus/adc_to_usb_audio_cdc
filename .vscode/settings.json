@@ -20,6 +20,7 @@
         "audio.h": "c",
         "soc.h": "c",
         "task.h": "c",
-        "freertos.h": "c"
+        "freertos.h": "c",
+        "cstdlib": "c"
     }
 }
